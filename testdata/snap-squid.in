@@ -1,0 +1,5 @@
+1683100800.123      5 192.168.1.10 TCP_HIT/200 1234 GET http://example.com/page.html jdoe DIRECT/93.184.216.34 text/html
+1683100801.456     10 192.168.1.11 TCP_MISS/404 567 GET http://missing.example.com/ - DIRECT/0.0.0.0 text/html
+1683100802.789      2 192.168.1.12 TCP_DENIED/403 890 CONNECT example.com:443 - NONE/- text/html
+2025/04/28 10:30:00| Listening on http://0.0.0.0:3128
+2025/04/28 10:30:01| Squid is now running

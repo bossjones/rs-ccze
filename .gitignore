@@ -1,0 +1,12 @@
+# Cargo build artefacts
+/target/
+
+# rustfmt backup files
+**/*.rs.bk
+
+# macOS desktop services metadata
+.DS_Store
+
+# Editor swap files
+*.swp
+*~
