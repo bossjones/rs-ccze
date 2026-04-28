@@ -283,11 +283,25 @@ pub const ANSI_FG_CODE: [u8; 8] = [30, 31, 32, 33, 34, 36, 35, 37];
 /// CSS colour names for normal-weight text, indexed by ccze base-colour index.
 /// Verbatim from `ccze_csscolor_normal_map` at `ccze-color.c:69-71`.
 pub const CSS_NORMAL: [&str; 8] = [
-    "black", "darkred", "#00C000", "brown", "blue", "darkcyan", "darkmagenta", "grey",
+    "black",
+    "darkred",
+    "#00C000",
+    "brown",
+    "blue",
+    "darkcyan",
+    "darkmagenta",
+    "grey",
 ];
 /// CSS colour names for bold text. From `ccze_csscolor_bold_map` at `ccze-color.c:72-74`.
 pub const CSS_BOLD: [&str; 8] = [
-    "black", "red", "lime", "yellow", "slateblue", "cyan", "magenta", "white",
+    "black",
+    "red",
+    "lime",
+    "yellow",
+    "slateblue",
+    "cyan",
+    "magenta",
+    "white",
 ];
 
 /// Default body background for HTML output (`ccze_cssbody` in `ccze-color.c:75`).
@@ -300,16 +314,83 @@ pub const HTML_BODY_BG: &str = "#404040";
 pub const CSS_ITER_ORDER: [Color; 77] = {
     use Color::*;
     [
-        Date, Host, Proc, Pid, PidB, Default, Email, Subject, Dir, File, Size, User,
-        HttpCodes, GetSize, HttpGet, HttpPost, HttpHead, HttpPut, HttpConnect, HttpTrace,
-        Unknown, GetTime, Uri, Ident, CType, Error, ProxyMiss, ProxyHit, ProxyDenied,
-        ProxyRefresh, ProxySwapfail, Debug, Warning, ProxyDirect, ProxyParent, SwapNum,
-        ProxyCreate, ProxySwapin, ProxySwapout, ProxyRelease, Mac, Version, Address,
-        Numbers, Signal, Service, Prot, Bad, Good, System, Incoming, Outgoing,
-        UniqN, Repeat, Field, Chain, Percentage, FtpCodes, Keyword, PkgStatus, Pkg,
-        StaticBlack, StaticRed, StaticGreen, StaticYellow, StaticBlue, StaticCyan,
-        StaticMagenta, StaticWhite, StaticBoldBlack, StaticBoldRed, StaticBoldGreen,
-        StaticBoldYellow, StaticBoldBlue, StaticBoldCyan, StaticBoldMagenta, StaticBoldWhite,
+        Date,
+        Host,
+        Proc,
+        Pid,
+        PidB,
+        Default,
+        Email,
+        Subject,
+        Dir,
+        File,
+        Size,
+        User,
+        HttpCodes,
+        GetSize,
+        HttpGet,
+        HttpPost,
+        HttpHead,
+        HttpPut,
+        HttpConnect,
+        HttpTrace,
+        Unknown,
+        GetTime,
+        Uri,
+        Ident,
+        CType,
+        Error,
+        ProxyMiss,
+        ProxyHit,
+        ProxyDenied,
+        ProxyRefresh,
+        ProxySwapfail,
+        Debug,
+        Warning,
+        ProxyDirect,
+        ProxyParent,
+        SwapNum,
+        ProxyCreate,
+        ProxySwapin,
+        ProxySwapout,
+        ProxyRelease,
+        Mac,
+        Version,
+        Address,
+        Numbers,
+        Signal,
+        Service,
+        Prot,
+        Bad,
+        Good,
+        System,
+        Incoming,
+        Outgoing,
+        UniqN,
+        Repeat,
+        Field,
+        Chain,
+        Percentage,
+        FtpCodes,
+        Keyword,
+        PkgStatus,
+        Pkg,
+        StaticBlack,
+        StaticRed,
+        StaticGreen,
+        StaticYellow,
+        StaticBlue,
+        StaticCyan,
+        StaticMagenta,
+        StaticWhite,
+        StaticBoldBlack,
+        StaticBoldRed,
+        StaticBoldGreen,
+        StaticBoldYellow,
+        StaticBoldBlue,
+        StaticBoldCyan,
+        StaticBoldMagenta,
+        StaticBoldWhite,
     ]
 };
 
@@ -328,12 +409,25 @@ pub struct AnsiAttr {
 
 impl AnsiAttr {
     pub const fn fg(idx: u8) -> Self {
-        Self { fg: idx, bg: None, bold: false, underline: false, reverse: false, blink: false }
+        Self {
+            fg: idx,
+            bg: None,
+            bold: false,
+            underline: false,
+            reverse: false,
+            blink: false,
+        }
     }
     pub const fn bold(idx: u8) -> Self {
-        Self { fg: idx, bg: None, bold: true, underline: false, reverse: false, blink: false }
+        Self {
+            fg: idx,
+            bg: None,
+            bold: true,
+            underline: false,
+            reverse: false,
+            blink: false,
+        }
     }
-
 }
 
 impl Color {
@@ -454,11 +548,28 @@ mod tests {
     #[test]
     fn keyword_round_trip() {
         for c in [
-            Color::Default, Color::Date, Color::Host, Color::Proc, Color::Pid, Color::PidB,
-            Color::Bad, Color::Good, Color::Repeat, Color::Numbers, Color::Pkg, Color::PkgStatus,
-            Color::HttpGet, Color::HttpPost, Color::Subject, Color::StaticBoldWhite,
+            Color::Default,
+            Color::Date,
+            Color::Host,
+            Color::Proc,
+            Color::Pid,
+            Color::PidB,
+            Color::Bad,
+            Color::Good,
+            Color::Repeat,
+            Color::Numbers,
+            Color::Pkg,
+            Color::PkgStatus,
+            Color::HttpGet,
+            Color::HttpPost,
+            Color::Subject,
+            Color::StaticBoldWhite,
         ] {
-            assert_eq!(Color::from_keyword(c.keyword()), Some(c), "round-trip failed for {c:?}");
+            assert_eq!(
+                Color::from_keyword(c.keyword()),
+                Some(c),
+                "round-trip failed for {c:?}"
+            );
         }
     }
 }

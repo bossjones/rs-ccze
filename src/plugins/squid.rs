@@ -13,9 +13,8 @@ static RE_ACCESS: Lazy<Regex> = Lazy::new(|| {
     )
     .unwrap()
 });
-static RE_CACHE: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^(\d{4}/\d{2}/\d{2}\s(\d{2}:){2}\d{2}\|)\s(.*)$").unwrap()
-});
+static RE_CACHE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(\d{4}/\d{2}/\d{2}\s(\d{2}:){2}\d{2}\|)\s(.*)$").unwrap());
 static RE_STORE: Lazy<Regex> = Lazy::new(|| {
     Regex::new(
         r"^([\d\.]+)\s(\w+)\s(\-?[\dA-F]+)\s+(\S+)\s([\dA-F]+)(\s+)(\d{3}|\?)(\s+)(\-?[\d\?]+)(\s+)(\-?[\d\?]+)(\s+)(\-?[\d\?]+)\s(\S+)\s(\-?[\d|\?]+)/(\-?[\d|\?]+)\s(\S+)\s(.*)",

@@ -13,12 +13,10 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::io;
 
-static RE_PRE: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"^([`'".,!?:;(\[{<]+)([^`'".,!?:;(\[{<]\S*)$"#).unwrap()
-});
-static RE_POST: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"^(\S*[^`'".,!?:;)\]}>])([`'".,!?:;)\]}>]+)$"#).unwrap()
-});
+static RE_PRE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"^([`'".,!?:;(\[{<]+)([^`'".,!?:;(\[{<]\S*)$"#).unwrap());
+static RE_POST: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"^(\S*[^`'".,!?:;)\]}>])([`'".,!?:;)\]}>]+)$"#).unwrap());
 static RE_HOST: Lazy<Regex> = Lazy::new(|| {
     Regex::new(
         r"^(((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|(([a-z0-9-_]+\.)+[a-z]{2,3})|(localhost)|(\w*::\w+)+)(:\d{1,5})?)$",
@@ -31,60 +29,106 @@ static RE_HOSTIP: Lazy<Regex> = Lazy::new(|| {
     )
     .unwrap()
 });
-static RE_MAC: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^([0-9a-f]{2}:){5}[0-9a-f]{2}$").unwrap());
-static RE_EMAIL: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^[a-z0-9-_=\+]+@([a-z0-9-_\.]+)+(\.[a-z]{2,4})+").unwrap()
-});
-static RE_EMAIL2: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"(\.[a-z]{2,4})+$").unwrap());
-static RE_URI: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^\w{2,}:/\/(\S+/?)+$").unwrap());
-static RE_SIZE: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^\d+(\.\d+)?[kmgt]i?b?(ytes?)?").unwrap());
+static RE_MAC: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9a-f]{2}:){5}[0-9a-f]{2}$").unwrap());
+static RE_EMAIL: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^[a-z0-9-_=\+]+@([a-z0-9-_\.]+)+(\.[a-z]{2,4})+").unwrap());
+static RE_EMAIL2: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\.[a-z]{2,4})+$").unwrap());
+static RE_URI: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\w{2,}:/\/(\S+/?)+$").unwrap());
+static RE_SIZE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\d+(\.\d+)?[kmgt]i?b?(ytes?)?").unwrap());
 static RE_VER: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^v?(\d+\.){1}((\d|[a-z])+\.)*(\d|[a-z])+$").unwrap());
-static RE_TIME: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"\d{1,2}:\d{1,2}(:\d{1,2})?").unwrap());
-static RE_ADDR: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^0x(\d|[a-f])+$").unwrap());
-static RE_NUM: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^[+-]?\d+$").unwrap());
+static RE_TIME: Lazy<Regex> = Lazy::new(|| Regex::new(r"\d{1,2}:\d{1,2}(:\d{1,2})?").unwrap());
+static RE_ADDR: Lazy<Regex> = Lazy::new(|| Regex::new(r"^0x(\d|[a-f])+$").unwrap());
+static RE_NUM: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[+-]?\d+$").unwrap());
 static RE_SIG: Lazy<Regex> = Lazy::new(|| {
     Regex::new(
         r"^sig(hup|int|quit|ill|abrt|fpe|kill|segv|pipe|alrm|term|usr1|usr2|chld|cont|stop|tstp|tin|tout|bus|poll|prof|sys|trap|urg|vtalrm|xcpu|xfsz|iot|emt|stkflt|io|cld|pwr|info|lost|winch|unused)",
     )
     .unwrap()
 });
-static RE_MSGID: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^[a-z0-9-_\.\$=\+]+@([a-z0-9-_\.]+)+(\.?[a-z]+)+").unwrap()
-});
+static RE_MSGID: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^[a-z0-9-_\.\$=\+]+@([a-z0-9-_\.]+)+(\.?[a-z]+)+").unwrap());
 
 const WORDS_BAD: &[&str] = &[
-    "warn", "restart", "exit", "stop", "end", "shutting", "down", "close",
-    "unreach", "can't", "cannot", "skip", "deny", "disable", "ignored", "miss",
-    "oops", "not", "backdoor", "blocking", "ignoring", "unable", "readonly",
-    "offline", "terminate", "empty", "virus",
+    "warn",
+    "restart",
+    "exit",
+    "stop",
+    "end",
+    "shutting",
+    "down",
+    "close",
+    "unreach",
+    "can't",
+    "cannot",
+    "skip",
+    "deny",
+    "disable",
+    "ignored",
+    "miss",
+    "oops",
+    "not",
+    "backdoor",
+    "blocking",
+    "ignoring",
+    "unable",
+    "readonly",
+    "offline",
+    "terminate",
+    "empty",
+    "virus",
 ];
 const WORDS_GOOD: &[&str] = &[
-    "activ", "start", "ready", "online", "load", "ok", "register", "detected",
-    "configured", "enable", "listen", "open", "complete", "attempt", "done",
-    "check", "listen", "connect", "finish", "clean",
+    "activ",
+    "start",
+    "ready",
+    "online",
+    "load",
+    "ok",
+    "register",
+    "detected",
+    "configured",
+    "enable",
+    "listen",
+    "open",
+    "complete",
+    "attempt",
+    "done",
+    "check",
+    "listen",
+    "connect",
+    "finish",
+    "clean",
 ];
-const WORDS_ERROR: &[&str] = &["error", "crit", "invalid", "fail", "false", "alarm", "fatal"];
+const WORDS_ERROR: &[&str] = &[
+    "error", "crit", "invalid", "fail", "false", "alarm", "fatal",
+];
 const WORDS_SYSTEM: &[&str] = &[
-    "ext2-fs", "reiserfs", "vfs", "iso", "isofs", "cslip", "ppp", "bsd",
-    "linux", "tcp/ip", "mtrr", "pci", "isa", "scsi", "ide", "atapi", "bios",
-    "cpu", "fpu", "discharging", "resume",
+    "ext2-fs",
+    "reiserfs",
+    "vfs",
+    "iso",
+    "isofs",
+    "cslip",
+    "ppp",
+    "bsd",
+    "linux",
+    "tcp/ip",
+    "mtrr",
+    "pci",
+    "isa",
+    "scsi",
+    "ide",
+    "atapi",
+    "bios",
+    "cpu",
+    "fpu",
+    "discharging",
+    "resume",
 ];
 
 /// Top-level entry. Mirrors `ccze_wordcolor_process`.
-pub fn process(
-    msg: &str,
-    sink: &mut dyn OutputSink,
-    wcol: bool,
-    slookup: bool,
-) -> io::Result<()> {
+pub fn process(msg: &str, sink: &mut dyn OutputSink, wcol: bool, slookup: bool) -> io::Result<()> {
     if msg.is_empty() {
         return Ok(());
     }
@@ -116,18 +160,20 @@ pub fn process(
 }
 
 /// Mirrors `ccze_wordcolor_process_one`.
-pub fn process_one(
-    word: &str,
-    sink: &mut dyn OutputSink,
-    slookup: bool,
-) -> io::Result<()> {
+pub fn process_one(word: &str, sink: &mut dyn OutputSink, slookup: bool) -> io::Result<()> {
     // 1. Strip leading/trailing punctuation.
     let (pre, body_after_pre): (Option<&str>, &str) = match RE_PRE.captures(word) {
-        Some(caps) => (Some(caps.get(1).unwrap().as_str()), caps.get(2).unwrap().as_str()),
+        Some(caps) => (
+            Some(caps.get(1).unwrap().as_str()),
+            caps.get(2).unwrap().as_str(),
+        ),
         None => (None, word),
     };
     let (body, post): (&str, Option<&str>) = match RE_POST.captures(body_after_pre) {
-        Some(caps) => (caps.get(1).unwrap().as_str(), Some(caps.get(2).unwrap().as_str())),
+        Some(caps) => (
+            caps.get(1).unwrap().as_str(),
+            Some(caps.get(2).unwrap().as_str()),
+        ),
         None => (body_after_pre, None),
     };
 
@@ -145,9 +191,9 @@ pub fn process_one(
         col = Color::Mac;
     } else if lword.starts_with('/') {
         col = Color::Dir;
-    } else if RE_EMAIL.is_match(&lword) && RE_EMAIL2.is_match(&lword) {
-        col = Color::Email;
-    } else if RE_MSGID.is_match(&lword) {
+    } else if (RE_EMAIL.is_match(&lword) && RE_EMAIL2.is_match(&lword)) || RE_MSGID.is_match(&lword)
+    {
+        // merges ccze-wordcolor.c:119-125 (email + msgid both → CCZE_COLOR_EMAIL)
         col = Color::Email;
     } else if RE_URI.is_match(&lword) {
         col = Color::Uri;

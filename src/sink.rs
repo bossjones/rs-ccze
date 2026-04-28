@@ -147,10 +147,7 @@ impl<W: Write> OutputSink for AnsiSink<W> {
 /// Format mirrors `ccze_colors_to_css` at `ccze-color.c:292-305`: one
 /// `.ccze_<keyword> { color: …; [text-background: …;] [text-decoration: …;] }`
 /// block per colour, in C-enum numeric order, separated by blank lines.
-pub fn write_css_classes<W: Write>(
-    w: &mut W,
-    overrides: &ColorOverrides,
-) -> io::Result<()> {
+pub fn write_css_classes<W: Write>(w: &mut W, overrides: &ColorOverrides) -> io::Result<()> {
     for &c in CSS_ITER_ORDER.iter() {
         let attr = overrides.html_attr(c);
         let kw = c.keyword();
@@ -239,11 +236,7 @@ impl<W: Write> HtmlSink<W> {
              body {{ font: 10pt courier; white-space: nowrap }}\n",
         )?;
         write_css_classes(&mut self.w, &self.overrides)?;
-        let body_bg = self
-            .overrides
-            .css_body
-            .as_deref()
-            .unwrap_or(HTML_BODY_BG);
+        let body_bg = self.overrides.css_body.as_deref().unwrap_or(HTML_BODY_BG);
         write!(
             self.w,
             "</style>\n\
@@ -286,7 +279,8 @@ impl<W: Write> OutputSink for HtmlSink<W> {
         // Same `<font ...>` wrapper as emit, but the `&nbsp;` body is *not*
         // HTML-encoded — it's a raw entity. Matches `ccze_addstr_internal
         // (DEFAULT, "&nbsp;", 0)` at ccze.c:513-514.
-        self.w.write_all(b"<font class=\"ccze_default\">&nbsp;</font>")
+        self.w
+            .write_all(b"<font class=\"ccze_default\">&nbsp;</font>")
     }
 
     fn newline(&mut self) -> io::Result<()> {

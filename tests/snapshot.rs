@@ -24,17 +24,29 @@ fn testdata_dir() -> PathBuf {
 }
 
 fn run_snapshot(name: &str, plugins: &[&str]) {
-    run_snapshot_mode(name, plugins, "-d", &format!("{name}.in"), &format!("{name}.ok"));
+    run_snapshot_mode(
+        name,
+        plugins,
+        "-d",
+        &format!("{name}.in"),
+        &format!("{name}.ok"),
+    );
 }
 
 /// Run a snapshot test with a specific output-mode flag.
 ///
 /// `mode_flag` is the single ccze flag that selects the renderer (`-d`, `-A`,
 /// `-h`). `input_file` and `expected_file` are file names within `testdata/`.
-fn run_snapshot_mode(name: &str, plugins: &[&str], mode_flag: &str, input_file: &str, expected_file: &str) {
+fn run_snapshot_mode(
+    name: &str,
+    plugins: &[&str],
+    mode_flag: &str,
+    input_file: &str,
+    expected_file: &str,
+) {
     let dir = testdata_dir();
-    let input = std::fs::read(dir.join(input_file))
-        .unwrap_or_else(|e| panic!("read {input_file}: {e}"));
+    let input =
+        std::fs::read(dir.join(input_file)).unwrap_or_else(|e| panic!("read {input_file}: {e}"));
     let expected = std::fs::read(dir.join(expected_file))
         .unwrap_or_else(|e| panic!("read {expected_file}: {e}"));
 
@@ -301,10 +313,14 @@ fn rcfile_overrides_date_color_in_ansi_output() {
 
     // The byte sequence preceding the text — should be the new attr block.
     // We expect: ESC[22m + ESC[31m + Sep 14… (no ESC[1m, no ESC[36m).
-    assert!(prefix.ends_with("\x1b[22m\x1b[31m"),
-        "expected date span to be preceded by ESC[22m ESC[31m, got: {prefix:?}");
-    assert!(!prefix.contains("\x1b[1m"),
-        "rcfile said `date red` (not bold) but bold escape was emitted: {prefix:?}");
+    assert!(
+        prefix.ends_with("\x1b[22m\x1b[31m"),
+        "expected date span to be preceded by ESC[22m ESC[31m, got: {prefix:?}"
+    );
+    assert!(
+        !prefix.contains("\x1b[1m"),
+        "rcfile said `date red` (not bold) but bold escape was emitted: {prefix:?}"
+    );
 
     let _ = std::fs::remove_file(&tmp);
 }

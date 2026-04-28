@@ -8,10 +8,8 @@ use regex::Regex;
 use std::io;
 
 static RE_FTPSTATS: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(
-        r"^(\d{9,10})\s([\da-f]+\.[\da-f]+)\s([^\s]+)\s([^\s]+)\s(U|D)\s(\d+)\s(\d+)\s(.*)$",
-    )
-    .unwrap()
+    Regex::new(r"^(\d{9,10})\s([\da-f]+\.[\da-f]+)\s([^\s]+)\s([^\s]+)\s(U|D)\s(\d+)\s(\d+)\s(.*)$")
+        .unwrap()
 });
 
 pub struct Ftpstats;

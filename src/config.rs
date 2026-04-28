@@ -67,7 +67,9 @@ impl ColorOverrides {
             raw_line
         } else {
             // Strip everything from the first `#` onwards.
-            raw_line.split_once('#').map_or(raw_line, |(before, _)| before)
+            raw_line
+                .split_once('#')
+                .map_or(raw_line, |(before, _)| before)
         };
 
         // Tokenise the way the C `strtok(line, " \t\n=")` does: whitespace and
@@ -167,11 +169,17 @@ impl ColorOverrides {
 
     /// ANSI/HTML attribute for `c`, applying any rcfile override.
     pub fn ansi_attr(&self, c: Color) -> AnsiAttr {
-        self.attrs.get(&c).copied().unwrap_or_else(|| c.default_ansi_attr())
+        self.attrs
+            .get(&c)
+            .copied()
+            .unwrap_or_else(|| c.default_ansi_attr())
     }
 
     pub fn html_attr(&self, c: Color) -> AnsiAttr {
-        self.attrs.get(&c).copied().unwrap_or_else(|| c.default_html_attr())
+        self.attrs
+            .get(&c)
+            .copied()
+            .unwrap_or_else(|| c.default_html_attr())
     }
 }
 
@@ -238,8 +246,14 @@ mod tests {
     #[test]
     fn parses_css_color_overrides() {
         let o = ColorOverrides::parse_str("cssred crimson\ncssboldgreen springgreen\n");
-        assert_eq!(o.css_normal[ansi_idx::RED as usize].as_deref(), Some("crimson"));
-        assert_eq!(o.css_bold[ansi_idx::GREEN as usize].as_deref(), Some("springgreen"));
+        assert_eq!(
+            o.css_normal[ansi_idx::RED as usize].as_deref(),
+            Some("crimson")
+        );
+        assert_eq!(
+            o.css_bold[ansi_idx::GREEN as usize].as_deref(),
+            Some("springgreen")
+        );
     }
 
     #[test]

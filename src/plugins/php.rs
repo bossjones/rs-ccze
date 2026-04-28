@@ -38,6 +38,8 @@ impl Plugin for Php {
         sink.space()?;
         sink.emit(Color::Keyword, "PHP")?;
         sink.space()?;
-        Ok(HandleResult::Remainder(caps.get(2).unwrap().as_str().to_owned()))
+        Ok(HandleResult::Remainder(
+            caps.get(2).unwrap().as_str().to_owned(),
+        ))
     }
 }

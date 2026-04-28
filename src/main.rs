@@ -140,7 +140,7 @@ fn merge_overrides(base: &mut ColorOverrides, extra: ColorOverrides) {
 /// `ccze_plugin_list_fancy` at `src/ccze-plugin.c:423-457`.
 fn list_plugins() {
     println!("Available plugins:\n");
-    println!("{:<10}| {:<8}| {}", "Name", "Type", "Description");
+    println!("{:<10}| {:<8}| Description", "Name", "Type");
     println!("------------------------------------------------------------");
     for p in plugins::all_plugins() {
         let type_str = match p.ptype() {

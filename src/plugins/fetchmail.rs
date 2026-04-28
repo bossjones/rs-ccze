@@ -7,9 +7,8 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::io;
 
-static RE_FETCHMAIL: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"(reading message) ([^@]*@[^:]*):([0-9]*) of ([0-9]*) (.*)").unwrap()
-});
+static RE_FETCHMAIL: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"(reading message) ([^@]*@[^:]*):([0-9]*) of ([0-9]*) (.*)").unwrap());
 
 pub struct Fetchmail;
 

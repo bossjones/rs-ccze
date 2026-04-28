@@ -7,9 +7,8 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::io;
 
-static RE_PROCMAIL: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^(\s*)(>?From|Subject:|Folder:)?\s(\S+)(\s+)?(.*)").unwrap()
-});
+static RE_PROCMAIL: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(\s*)(>?From|Subject:|Folder:)?\s(\S+)(\s+)?(.*)").unwrap());
 
 pub struct Procmail;
 

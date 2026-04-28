@@ -7,18 +7,14 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::io;
 
-static RE_STATUS: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^([-\d]{10}\s[:\d]{8})\sstatus\s(\S+)\s(\S+)\s(\S+)$").unwrap()
-});
+static RE_STATUS: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^([-\d]{10}\s[:\d]{8})\sstatus\s(\S+)\s(\S+)\s(\S+)$").unwrap());
 static RE_ACTION: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(
-        r"^([-\d]{10}\s[:\d]{8})\s(install|upgrade|remove|purge)\s(\S+)\s(\S+)\s(\S+)$",
-    )
-    .unwrap()
+    Regex::new(r"^([-\d]{10}\s[:\d]{8})\s(install|upgrade|remove|purge)\s(\S+)\s(\S+)\s(\S+)$")
+        .unwrap()
 });
-static RE_CONFFILE: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^([-\d]{10}\s[:\d]{8})\sconffile\s(\S+)\s(install|keep)$").unwrap()
-});
+static RE_CONFFILE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^([-\d]{10}\s[:\d]{8})\sconffile\s(\S+)\s(install|keep)$").unwrap());
 
 pub struct Dpkg;
 

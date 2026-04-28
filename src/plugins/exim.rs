@@ -7,14 +7,11 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::io;
 
-static RE_EXIM: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s(.*)$").unwrap()
-});
-static RE_EXIM_ACTIONTYPE: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^(\S{16})\s([<=\*][=>\*])\s(\S+.*)$").unwrap()
-});
-static RE_EXIM_UNIQN: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^(\S{16})\s(.*)$").unwrap());
+static RE_EXIM: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s(.*)$").unwrap());
+static RE_EXIM_ACTIONTYPE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(\S{16})\s([<=\*][=>\*])\s(\S+.*)$").unwrap());
+static RE_EXIM_UNIQN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(\S{16})\s(.*)$").unwrap());
 
 pub struct Exim;
 
@@ -72,17 +69,17 @@ impl Plugin for Exim {
 
         sink.emit(Color::Date, date)?;
         sink.space()?;
-        if let Some(u) = uniqn {
-            if !u.is_empty() {
-                sink.emit(Color::UniqN, u)?;
-                sink.space()?;
-            }
+        if let Some(u) = uniqn
+            && !u.is_empty()
+        {
+            sink.emit(Color::UniqN, u)?;
+            sink.space()?;
         }
-        if let Some(a) = action {
-            if !a.is_empty() {
-                sink.emit(color, a)?;
-                sink.space()?;
-            }
+        if let Some(a) = action
+            && !a.is_empty()
+        {
+            sink.emit(color, a)?;
+            sink.space()?;
         }
         Ok(HandleResult::Remainder(msg))
     }
