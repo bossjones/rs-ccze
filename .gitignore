@@ -299,3 +299,10 @@ coverage/
 .cache/
 tmp/
 temp/
+.claude/agents/
+.claude/commands/
+.claude/hooks/
+.claude/output-styles/
+.claude/rules/
+.claude/skills/
+.claude/status_lines/
