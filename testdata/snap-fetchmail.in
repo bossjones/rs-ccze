@@ -1,0 +1,3 @@
+Sep 14 10:00:00 host fetchmail[1234]: reading message user@host.example.com:1 of 5 (3456 octets)
+Sep 14 10:00:05 host fetchmail[1234]: reading message user@host.example.com:2 of 5 (1234 octets)
+Sep 14 10:00:10 host fetchmail[1234]: reading message admin@other.example.org:3 of 5 (789 octets)

@@ -1,0 +1,4 @@
+distccd[12345] (dcc_writex) failed to write: Connection reset by peer
+distccd[6789] compiling /home/user/main.c on host worker.example.com
+distccd[42] (dcc_collect_child) child 1234 exited with code 0
+distccd[100] starting work

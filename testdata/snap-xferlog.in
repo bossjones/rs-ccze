@@ -1,0 +1,3 @@
+Mon Apr 28 10:30:00 2025 5 client.example.com 12345 /pub/file.zip b _ o a anonymous ftp 0 * c
+Mon Apr 28 11:00:00 2025 12 1.2.3.4 67890 /uploads/photo.jpg b _ i a jdoe ftp 1 jdoe c
+Tue Apr 29 09:15:00 2025 3 host.example.org 4096 /docs/readme.txt b _ o a guest ftp 0 * c

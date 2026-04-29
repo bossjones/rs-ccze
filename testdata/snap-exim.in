@@ -1,0 +1,5 @@
+2025-04-28 10:15:00 1rXyZw-000abc-1A <= sender@example.com U=user1 P=esmtp S=1234
+2025-04-28 10:15:01 1rXyZw-000abc-1A => recipient@example.com R=dnslookup T=remote_smtp
+2025-04-28 10:15:02 1rXyZw-000abc-1A == queued@example.com R=defer
+2025-04-28 10:15:03 1rXyZw-000abc-1A Completed
+2025-04-28 10:20:00 Start queue run: pid=2345

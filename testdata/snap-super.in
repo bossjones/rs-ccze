@@ -1,0 +1,2 @@
+root@example.com Mon Apr 28 14:30:01 2025 backup (running /usr/local/bin/backup -daily)
+admin@example.com Mon Apr 28 15:00:02 2025 reload (running /etc/init.d/nginx reload)

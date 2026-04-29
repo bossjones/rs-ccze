@@ -1,0 +1,2 @@
+<email>root@example.com</email><default> </default><date>Mon Apr 28 14:30:01 2025</date><default> </default><process>backup</process><default> </default><pid-sqbr>(</pid-sqbr><default>running /usr/local/bin/backup -daily</default><pid-sqbr>)</pid-sqbr>
+<email>admin@example.com</email><default> </default><date>Mon Apr 28 15:00:02 2025</date><default> </default><process>reload</process><default> </default><pid-sqbr>(</pid-sqbr><default>running /etc/init.d/nginx reload</default><pid-sqbr>)</pid-sqbr>
