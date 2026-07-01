@@ -1,30 +1,138 @@
-# ccze (Rust port)
+<h1 align="center">ccze — rust port</h1>
 
-A Rust port of [ccze](https://github.com/cornet/ccze), the streaming log
-colorizer. `ccze` reads log lines on stdin, recognizes them with format-aware
-plugins (syslog, Apache httpd, Postfix, Exim, squid, ProFTPD, Icecast,
-Procmail, and 12 others — 20 plugins in total), and emits colorized output as
-ANSI escape codes, a self-contained HTML document, or debug tags. Anything a
-plugin doesn't claim falls through a wordcolor pass that highlights
-errors/warnings/successes by keyword.
+<p align="center">
+  <strong>One colorizer, every log format.</strong> Pipe any log file through <code>ccze</code> and
+  read it the way it was meant to be read — timestamps, hosts, PIDs, IPs, URLs, status codes,
+  and errors all lit up by format-aware plugins.
+</p>
 
-This port is feature-complete against upstream: 20/20 plugins, all three
-output sinks (ANSI, HTML, debug), `~/.cczerc` parsing with `-c key=color`
-overrides, and byte-exact parity with the original C binary. TDD-driven from
-day one — every snapshot test feeds a `.in` fixture through the binary and
-byte-compares stdout to a `.ok` reference minted from the C reference running
-inside Docker.
+<p align="center">
+  <img src="docs/images/rs-ccze-hero-mixed-logs.png" alt="ccze colorizing a mix of Apache, syslog, squid, Postfix, apm, dpkg, PHP, and vsftpd log lines in a single stream" width="100%">
+</p>
+
+<p align="center">
+  <code>cat /var/log/*.log | ccze -A</code> — Apache, syslog, squid, Postfix, dpkg, PHP, and more,
+  colorized in a single pass.
+</p>
+
+<p align="center">
+  <img alt="Language: Rust" src="https://img.shields.io/badge/language-Rust-orange">
+  <img alt="Edition 2024" src="https://img.shields.io/badge/edition-2024-blue">
+  <img alt="Plugins: 20/20" src="https://img.shields.io/badge/plugins-20%2F20-brightgreen">
+  <img alt="Tests: 36/36 green" src="https://img.shields.io/badge/tests-36%2F36%20green-brightgreen">
+  <img alt="License: GPL-2.0-or-later" src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue">
+</p>
+
+---
+
+A Rust port of [ccze](https://github.com/cornet/ccze), the streaming log colorizer. `ccze` reads
+log lines on stdin, recognizes them with **format-aware plugins** (syslog, Apache httpd, Postfix,
+Exim, squid, ProFTPD, Icecast, Procmail, and 12 others — **20 plugins in total**), and emits
+colorized output as ANSI escape codes, a self-contained HTML document, or debug tags. Anything a
+plugin doesn't claim falls through a **wordcolor pass** that highlights errors, warnings, and
+successes by keyword.
+
+This port is **feature-complete against upstream**: 20/20 plugins, all three output sinks
+(ANSI, HTML, debug), `~/.cczerc` parsing with `-c key=color` overrides, and **byte-exact parity**
+with the original C binary. TDD-driven from day one — every snapshot test feeds a `.in` fixture
+through the binary and byte-compares stdout to a `.ok` reference minted from the C reference
+running inside Docker.
+
+## Why ccze?
+
+- **Zero configuration.** Pipe a log in, get color out. No format strings, no per-app setup — the
+  right plugin recognizes the line and colors it correctly.
+- **Format-aware, not regex-soup.** 20 dedicated plugins understand the *structure* of each log
+  type, so a Postfix queue ID, an Apache status code, and a squid cache verdict each get their own
+  meaning-carrying color.
+- **Built for streaming.** Works cleanly with `tail -f` for live log watching — no alternate
+  screen, no cursor games, just colorized lines flowing by.
+- **Three ways to render.** Live ANSI for the terminal, a self-contained HTML document (with
+  embedded CSS) for sharing or archiving, and debug tags for scripting.
+- **Faithful to the original.** Every plugin is a byte-for-byte translation of upstream ccze,
+  verified against the real C binary. If upstream colors it a certain way, so does this.
+- **A single fast binary.** Rust, statically linked plugins, `--release` LTO build. No runtime,
+  no dependencies to install alongside it.
+
+## See it in action
+
+Every screenshot below is real `ccze -A` output. One tool, many formats — notice how each log type
+gets colors tuned to *its* structure.
+
+### syslog — daemon messages
+
+Timestamps, hostnames, and PIDs are pulled out of every line; keywords like `started`, `Exit`, and
+`down` are highlighted so state changes jump off the screen.
+
+![ccze colorizing syslog output: xinetd, pppd, CRON, and syslog-ng messages with highlighted timestamps, hosts, and PIDs](docs/images/rs-ccze-syslog-daemon-messages.png)
+
+### Apache httpd — access log
+
+Combined-format access lines with IPs, request methods, and HTTP status codes each in their own
+color — a `400` reads differently from a `200` at a glance.
+
+![ccze colorizing an Apache access log with colored IPs, request lines, and HTTP status codes](docs/images/rs-ccze-apache-access-log.png)
+
+### Postfix — mail log
+
+Queue IDs, `client=`, `from=`, `to=`, `relay=`, and `status=sent` are all recognized, so you can
+follow one message across `smtpd` → `qmgr` → `smtp` by its queue ID.
+
+![ccze colorizing a Postfix mail log showing queue IDs, client/from/to fields, and delivery status](docs/images/rs-ccze-postfix-mail-log.png)
+
+### Exim — mail queue
+
+The `<=` / `=>` / `==` arrows, message IDs, addresses, and `Completed` markers are colored to trace
+a message through arrival, delivery, deferral, and queue runs.
+
+![ccze colorizing an Exim mainlog with colored message IDs, delivery arrows, and addresses](docs/images/rs-ccze-exim-mail-queue.png)
+
+### squid — proxy cache
+
+Cache verdicts (`TCP_HIT`, `TCP_MISS`, `TCP_DENIED`) and their status codes are color-coded so
+hits, misses, and denials are instantly distinguishable.
+
+![ccze colorizing a squid access log with colored cache verdicts and HTTP status codes](docs/images/rs-ccze-squid-proxy-cache.png)
+
+### PHP — error log
+
+`Notice`, `Warning`, and `Fatal error` escalate in color, and file paths and line numbers are
+picked out so you can jump straight to the source.
+
+![ccze colorizing a PHP error log with severity-escalating colors and highlighted file paths](docs/images/rs-ccze-php-error-log.png)
+
+### dpkg — package log
+
+`upgrade`, `status`, and `conffile` actions plus package names and versions are colored, turning a
+wall of install history into a scannable timeline.
+
+![ccze colorizing a dpkg log with colored actions, package names, and version numbers](docs/images/rs-ccze-dpkg-package-log.png)
+
+### ProFTPD — transfer log
+
+xferlog transfers (`RETR`, `STOR`) with IPs, users, paths, and byte counts, plus FTP command
+lines, are colored for quick auditing of uploads and downloads.
+
+![ccze colorizing a ProFTPD xferlog with colored transfer commands, paths, and byte counts](docs/images/rs-ccze-proftpd-transfer-log.png)
+
+### vsftpd — FTP log
+
+Login outcomes (`FAIL` / `OK`), `CONNECT`, and `DOWNLOAD` events with clients, paths, sizes, and
+transfer rates — failures stand out in red immediately.
+
+![ccze colorizing a vsftpd log with colored login outcomes, connects, and download details](docs/images/rs-ccze-vsftpd-ftp-log.png)
+
+> 📸 **More formats:** see the full [screenshot gallery](docs/gallery.md) for every plugin, side by
+> side, with the exact command that produced each one.
 
 ## Acknowledgements
 
-Enormous thanks to **[Gergely Nagy (cornet)](https://github.com/cornet)** and
-the contributors to the original [ccze](https://github.com/cornet/ccze).
-Every plugin in this repo is a translation of their work — the regexes,
-color semantics, plugin architecture, wordcolor word lists, and several of
-the `bug-*` test fixtures (provenance tracked in `testdata/SOURCES.md`) all
-come straight from upstream. This port exists only because that codebase
-existed first; all credit for the design, taste, and decade-plus of bug
-fixes belongs there. This project is released under
+Enormous thanks to **[Gergely Nagy (cornet)](https://github.com/cornet)** and the contributors to
+the original [ccze](https://github.com/cornet/ccze). Every plugin in this repo is a translation of
+their work — the regexes, color semantics, plugin architecture, wordcolor word lists, and several
+of the `bug-*` test fixtures (provenance tracked in `testdata/SOURCES.md`) all come straight from
+upstream. This port exists only because that codebase existed first; all credit for the design,
+taste, and decade-plus of bug fixes belongs there. This project is released under
 **GPL-2.0-or-later**, matching the upstream license.
 
 ## Status — port complete
@@ -84,6 +192,9 @@ rust/
     build-c-ref.sh             — wraps `docker build` → `ccze:reference`
     generate-baseline.sh       — pipes `<name>.in` through the reference
     generate-all-baselines.sh  — runs the above for every untested plugin
+docs/
+  images/                      — the screenshots shown above
+  gallery.md                   — full plugin screenshot gallery
 ```
 
 ## Running tests
